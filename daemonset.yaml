@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: wazuh-daemonset
+  namespace: default
+  labels:
+    k8s-app: wazuh-daemonset
+spec:
+  selector:
+    matchLabels:
+      name: wazuh-daemonset
+  template:
+    metadata:
+      labels:
+        name: wazuh-daemonset
+    spec:
+      hostPID: true
+      hostIPC: true
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: wazuh-daemonset
+        image: wazuh-daemonset:0.1
+        securityContext:
+          privileged: true
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+          - mountPath: /var/run
+            name: var-run
+          - mountPath: /host/dev
+            name: dev
+          - mountPath: /host/sys
+            name: sys
+            readOnly: true
+          - mountPath: /host/proc
+            name: proc
+            readOnly: true
+          - mountPath: /host/etc
+            name: etc
+            readOnly: true
+          - mountPath: /var/run/docker.sock
+            name: docker-socket-mount
+          - mountPath: /host/var/run/docker.sock
+            name: docker-socket-mount
+          - mountPath: /host/boot
+            name: boot
+            readOnly: true
+          - mountPath: /host/usr
+            name: usr
+            readOnly: true
+          - mountPath: /host/lib/modules
+            name: modules
+            readOnly: true
+          - mountPath: /host/var/log
+            name: log
+            readOnly: true
+          - mountPath: /host/opt
+            name: opt
+            readOnly: true
+      terminationGracePeriodSeconds: 5
+      volumes:
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: docker-socket-mount
+        hostPath:
+          path: /run/docker.sock
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: etc
+        hostPath:
+          path: /etc
+      - name: boot
+        hostPath:
+          path: /boot
+      - name: usr
+        hostPath:
+          path: /usr
+      - name: modules
+        hostPath:
+          path: /lib/modules
+      - name: log
+        hostPath:
+          path: /var/log
+      - name: opt
+        hostPath:
+          path: /opt
