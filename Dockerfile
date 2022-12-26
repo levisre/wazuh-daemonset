@@ -8,7 +8,7 @@ RUN apt-get update && \
 # Install the Wazuh agent
 ARG MANAGER_IP="192.168.32.128"
 ENV WAZUH_MANAGER ${MANAGER_IP}
-RUN curl -so wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.6-1_amd64.deb && WAZUH_MANAGER=${WAZUH_MANAGER} dpkg -i ./wazuh-agent.deb
+RUN curl -so wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.10-1_amd64.deb && WAZUH_MANAGER=${WAZUH_MANAGER} dpkg -i ./wazuh-agent.deb
 
 RUN echo "<ossec_config><wodle name=\"docker-listener\"><disabled>no</disabled><run_on_start>yes</run_on_start></wodle></ossec_config>" >> /var/ossec/etc/ossec.conf
 # Entrypoint
