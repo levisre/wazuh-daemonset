@@ -1,4 +1,4 @@
-FROM python:3.9.13-slim-bullseye
+FROM python:slim-bullseye
 # Dependencies
 RUN apt-get update && \
     apt-get install curl procps apt-transport-https lsb-release -y &&\
